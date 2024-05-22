@@ -22,6 +22,7 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
 	compileOnly 'org.projectlombok:lombok:1.18.32'
 	implementation 'io.vavr:vavr:0.10.4'
+	implementation 'org.yaml:snakeyaml:2.2'
 
 }
 

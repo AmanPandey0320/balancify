@@ -1,6 +1,7 @@
 package com.kabutar.balancify;
 
 
+import com.kabutar.balancify.config.BaseConfig;
 import com.kabutar.balancify.provider.Context;
 import com.sun.net.httpserver.HttpServer;
 
@@ -10,11 +11,11 @@ import java.net.InetSocketAddress;
 public class BalancifyApplication {
 
 	public static void main(String[] args) throws IOException {
-		int serverPort = 8084;
-		HttpServer httpServer = HttpServer.create(new InetSocketAddress(serverPort),0);
-		Context context = new Context(httpServer);
+		Context context = new Context();
+		BaseConfig config = context.getBaseConfig();
+		HttpServer httpServer = HttpServer.create(new InetSocketAddress(config.getPort()),0);
 
-		context.setServerContext();
+		context.setServerContext(httpServer);
 
 		httpServer.setExecutor(null);
 		httpServer.start();
