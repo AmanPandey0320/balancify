@@ -1,25 +1,41 @@
 package com.kabutar.balancify.provider;
 
-import com.kabutar.balancify.BalancifyApplication;
-import com.kabutar.balancify.Constant.AppLevel;
+import com.kabutar.balancify.constant.AppLevel;
 import com.kabutar.balancify.config.BaseConfig;
+import com.kabutar.balancify.scheduler.SchedulerType;
+import com.kabutar.balancify.util.Resolver;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.util.Objects;
 
 public class Context {
     private BaseConfig baseConfig;
+    private Scheduler scheduler;
 
-    public Context() throws FileNotFoundException {
+    public Context() throws Exception {
         this.fetchConfigs();
+        this.configureScheduler();
+    }
+
+    public BaseConfig getBaseConfig() {
+        return baseConfig;
+    }
+
+    /*
+    *
+    * */
+    private void configureScheduler() throws Exception {
+        SchedulerType schedulerType = Resolver.resolveScheduler(this.baseConfig.getAlgo());
+        this.scheduler = new Scheduler(schedulerType);
     }
 
 
-
+    /*
+    *
+    * */
     private void fetchConfigs() throws FileNotFoundException {
         try{
 
@@ -31,15 +47,9 @@ public class Context {
         }
     }
 
-    public BaseConfig getBaseConfig() {
-        return baseConfig;
-    }
+    public void setServerContext(HttpServer httpServer) throws Exception {
 
-    public void setBaseConfig(BaseConfig baseConfig) {
-        this.baseConfig = baseConfig;
-    }
 
-    public void setServerContext(HttpServer httpServer){
         httpServer.createContext("/", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {

@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 
 public class BalancifyApplication {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		Context context = new Context();
 		BaseConfig config = context.getBaseConfig();
 		HttpServer httpServer = HttpServer.create(new InetSocketAddress(config.getPort()),0);

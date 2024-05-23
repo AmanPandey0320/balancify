@@ -1,4 +1,4 @@
-package com.kabutar.balancify.Constant;
+package com.kabutar.balancify.constant;
 
 
 import java.util.Objects;
