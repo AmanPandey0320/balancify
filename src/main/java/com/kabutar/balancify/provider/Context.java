@@ -1,11 +1,10 @@
 package com.kabutar.balancify.provider;
 
-import com.kabutar.balancify.constant.AppLevel;
+import com.kabutar.balancify.config.Route;
+import com.kabutar.balancify.constants.AppLevel;
 import com.kabutar.balancify.config.BaseConfig;
 import com.kabutar.balancify.scheduler.SchedulerType;
-import com.kabutar.balancify.util.Resolver;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.kabutar.balancify.util.ResolverUtil;
 import com.sun.net.httpserver.HttpServer;
 import org.yaml.snakeyaml.Yaml;
 
@@ -28,8 +27,12 @@ public class Context {
     *
     * */
     private void configureScheduler() throws Exception {
-        SchedulerType schedulerType = Resolver.resolveScheduler(this.baseConfig.getAlgo());
+        SchedulerType schedulerType = ResolverUtil.resolveScheduler(this.baseConfig.getAlgo());
         this.scheduler = new Scheduler(schedulerType);
+
+        for(Route route: this.baseConfig.getRoute()){
+            this.scheduler.init(route.getPath(),route.getServers());
+        }
     }
 
 
@@ -48,18 +51,7 @@ public class Context {
     }
 
     public void setServerContext(HttpServer httpServer) throws Exception {
-
-
-        httpServer.createContext("/", new HttpHandler() {
-            @Override
-            public void handle(HttpExchange exchange) throws IOException {
-                String path = exchange.getRequestURI().getPath();
-                exchange.sendResponseHeaders(200, path.getBytes().length);
-                OutputStream output = exchange.getResponseBody();
-                output.write(path.getBytes());
-                output.flush();
-                exchange.close();
-            }
-        });
+        RequestHandler requestHandler = new RequestHandler(this.scheduler);
+        httpServer.createContext("/", requestHandler);
     }
 }

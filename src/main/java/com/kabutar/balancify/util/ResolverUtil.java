@@ -2,7 +2,7 @@ package com.kabutar.balancify.util;
 
 import com.kabutar.balancify.scheduler.SchedulerType;
 
-public class Resolver {
+public class ResolverUtil {
     public static SchedulerType resolveScheduler(String type) throws Exception {
         switch (type){
             case "RR":

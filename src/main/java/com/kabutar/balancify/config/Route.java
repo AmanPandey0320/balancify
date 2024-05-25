@@ -1,11 +1,12 @@
 package com.kabutar.balancify.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Route {
     private String id;
     private String path;
-    private List<Server> servers;
+    private ArrayList<Server> servers;
 
     // Getters and Setters
 
@@ -25,11 +26,11 @@ public class Route {
         this.path = path;
     }
 
-    public List<Server> getServers() {
+    public ArrayList<Server> getServers() {
         return servers;
     }
 
-    public void setServers(List<Server> servers) {
+    public void setServers(ArrayList<Server> servers) {
         this.servers = servers;
     }
 
