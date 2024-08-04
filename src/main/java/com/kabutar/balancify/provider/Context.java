@@ -3,6 +3,7 @@ package com.kabutar.balancify.provider;
 import com.kabutar.balancify.config.Route;
 import com.kabutar.balancify.constants.AppLevel;
 import com.kabutar.balancify.config.BaseConfig;
+import com.kabutar.balancify.handler.IngressHandler;
 import com.kabutar.balancify.scheduler.SchedulerType;
 import com.kabutar.balancify.util.ResolverUtil;
 import com.sun.net.httpserver.HttpServer;
@@ -51,7 +52,7 @@ public class Context {
     }
 
     public void setServerContext(HttpServer httpServer) throws Exception {
-        RequestHandler requestHandler = new RequestHandler(this.scheduler);
+        IngressHandler requestHandler = new IngressHandler(this.scheduler);
         httpServer.createContext("/", requestHandler);
     }
 }
