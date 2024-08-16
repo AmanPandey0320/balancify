@@ -14,10 +14,12 @@ import java.io.*;
 public class Context {
     private BaseConfig baseConfig;
     private Scheduler scheduler;
+    private Proxy proxy;
 
     public Context() throws Exception {
         this.fetchConfigs();
         this.configureScheduler();
+        this.initProxy();
     }
 
     public BaseConfig getBaseConfig() {
@@ -34,6 +36,10 @@ public class Context {
         for(Route route: this.baseConfig.getRoute()){
             this.scheduler.init(route.getPath(),route.getServers());
         }
+    }
+    
+    private void initProxy() {
+    	this.proxy = new Proxy();
     }
 
 
@@ -52,7 +58,7 @@ public class Context {
     }
 
     public void setServerContext(HttpServer httpServer) throws Exception {
-        IngressHandler requestHandler = new IngressHandler(this.scheduler);
-        httpServer.createContext("/", requestHandler);
+        IngressHandler ingressHandler = new IngressHandler(this.scheduler,this.proxy);
+        httpServer.createContext("/", ingressHandler);
     }
 }

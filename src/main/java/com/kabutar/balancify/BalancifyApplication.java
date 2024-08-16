@@ -5,7 +5,6 @@ import com.kabutar.balancify.config.BaseConfig;
 import com.kabutar.balancify.provider.Context;
 import com.sun.net.httpserver.HttpServer;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class BalancifyApplication {
@@ -16,6 +15,8 @@ public class BalancifyApplication {
 		HttpServer httpServer = HttpServer.create(new InetSocketAddress(config.getPort()),0);
 
 		context.setServerContext(httpServer);
+		
+		System.out.println("server started at: "+config.getPort());
 
 		httpServer.setExecutor(null);
 		httpServer.start();

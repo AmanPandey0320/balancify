@@ -20,6 +20,7 @@ public class BaseScheduler {
     public void initializeParameters(){}
 
     public Server schedule() throws IOException {
+    	System.out.println("here");
         int idx = 0;
         int cnt;
         int threshHold;

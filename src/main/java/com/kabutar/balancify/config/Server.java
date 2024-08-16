@@ -2,9 +2,37 @@ package com.kabutar.balancify.config;
 
 public class Server {
     private String id;
-    private String hostname;
-    private BaseConfig.Health health;
+    private String protocol;
+    private String ip;
+    private String port;
+	private BaseConfig.Health health;
     private Size size;
+    
+    
+    public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
 
     // Getters and Setters
 
@@ -14,14 +42,6 @@ public class Server {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
     }
 
     public BaseConfig.Health getHealth() {
@@ -71,13 +91,11 @@ public class Server {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Server{" +
-                "id='" + id + '\'' +
-                ", hostname='" + hostname + '\'' +
-                ", health=" + health +
-                ", size=" + size +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Server [id=" + id + ", protocol=" + protocol + ", ip=" + ip + ", port=" + port + ", health=" + health
+				+ ", size=" + size + "]";
+	}
+    
+    
 }

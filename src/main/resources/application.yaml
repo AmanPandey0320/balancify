@@ -3,17 +3,21 @@ port: 8080
 algo: "RR"
 route:
   - id: "bal-route-1"
-    path: "/"
+    path: "/get_names"
     servers:
       - id: "server-1"
-        hostname: "http://localhost:3000"
+        protocol: "http"
+        ip: "localhost"
+        port: 3000
         health:
           path: "/health-check"
         size:
           cpu: 2
           memory: 2
       - id: "server-2"
-        hostname: "http://localhost:3002"
+        protocol: "http"
+        ip: "localhost"
+        port: 3002
         health:
           path: "/health-check"
         size:
@@ -23,18 +27,22 @@ route:
     path: "/api/v1/post/get"
     servers:
       - id: "server-1"
-        hostname: "http://localhost:3001"
+        protocol: "http"
+        ip: "localhost"
+        port: 3001
         health:
           path: "/health-check"
         size:
           cpu: 4
           memory: 4
       - id: "server-2"
-        hostname: "http://localhost:3002"
+        protocol: "http"
+        ip: "localhost"
+        port: 3002
         health:
           path: "/health-check"
         size:
           cpu: 3
           memory: 3
 healthCheck:
-  intervals: 5
+  intervals: 300

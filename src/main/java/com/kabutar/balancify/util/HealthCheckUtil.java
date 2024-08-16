@@ -9,12 +9,11 @@ import java.net.URL;
 public class HealthCheckUtil {
     public boolean checkHealth(Server server) throws IOException {
         try{
-            String host = server.getHostname();
+            String host = UrlUtil.getHostName(server);
             String endPoint = server.getHealth().getPath();
 
             URL url = new URL(host+endPoint);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
 
             connection.setRequestMethod("GET");
             connection.connect();
@@ -22,6 +21,7 @@ public class HealthCheckUtil {
 
             return connection.getResponseCode() < 400;
         }catch (IOException e){
+        	e.printStackTrace();
             return false;
         }
     }
