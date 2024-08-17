@@ -1,6 +1,7 @@
-package com.kabutar.balancify.scheduler;
+package com.kabutar.balancify.scheduler.rigid;
 
 import com.kabutar.balancify.config.Server;
+import com.kabutar.balancify.scheduler.BaseScheduler;
 import com.kabutar.balancify.util.HealthCheckUtil;
 
 import java.io.IOException;
