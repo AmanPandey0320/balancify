@@ -49,8 +49,6 @@ public class RoundRobinScheduler extends BaseScheduler {
     @Override
     public Server schedule() throws IOException {
         int idx = 0;
-        int cnt;
-        int threshHold;
         Server server;
         while(idx < this.noOfServer){
             server = this.serverQueue.peek();
@@ -60,11 +58,13 @@ public class RoundRobinScheduler extends BaseScheduler {
                 this.serverQueue.remove();
                 this.serverQueue.add(server);
             }else{
-                cnt = this.serverReqCount.get(server.getId());
-                threshHold = server.getSize().getCpu();
-                this.serverReqCount.put(server.getId(),cnt+1);
-
-                if(cnt >= (threshHold*9)/10){
+            	//server is healthy
+            	
+            	//update load
+            	this.updateLoad(server);
+            	
+            	//check threshold limit
+                if(this.isThreshold(server)){
                     this.serverQueue.remove();
                     this.serverQueue.add(server);
                 }
@@ -74,6 +74,19 @@ public class RoundRobinScheduler extends BaseScheduler {
         }
 
         return null;
+    }
+    
+    private void updateLoad(Server server) {
+    	int cnt = this.serverReqCount.get(server.getId());
+    	this.serverReqCount.put(server.getId(),cnt+1);
+    }
+    
+    private boolean isThreshold(Server server) {
+    	int cnt = this.serverReqCount.get(server.getId());
+    	int threshHold = server.getSize().getCpu();
+    	
+    	return (cnt >= (threshHold*9)/10);
+    	
     }
 
     private void sortServersBySize(){
