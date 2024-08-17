@@ -24,30 +24,15 @@ public class IngressHandler implements HttpHandler {
         this.proxy = proxy;
     }
     
-//    private String readRequestBody(HttpExchange exchange) throws IOException {
-//    	StringBuilder builder = new StringBuilder();
-//    	InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(),"utf-8");
-//    	
-//    	int b;
-//    	
-//    	while((b = reader.read()) != -1) {
-//    		builder.append((char) b);
-//    	}
-//    	
-//    	return builder.toString();
-//    }
-    
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
-        Map<String,List<String>> headers = exchange.getRequestHeaders();
         
 
         try {
             Server server = this.scheduler.getServeFromPool(path);
-            this.proxy.execute(exchange, server);
-            String res = path;
+            String res = this.proxy.execute(exchange, server);
             exchange.sendResponseHeaders(200, res.getBytes().length);
             OutputStream output = exchange.getResponseBody();
             

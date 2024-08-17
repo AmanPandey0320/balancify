@@ -7,4 +7,5 @@ public class HttpMethod {
 	public static String PATCH = "PATCH";
 	public static String DELETE = "DELETE";
 	public static String HEAD = "HEAD";
+	
 }

@@ -2,15 +2,10 @@ package com.kabutar.balancify.provider;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import com.kabutar.balancify.config.Server;
-import com.kabutar.balancify.constants.HttpMethod;
 import com.kabutar.balancify.handler.EgressHandler;
 import com.kabutar.balancify.util.UrlUtil;
 import com.sun.net.httpserver.HttpExchange;
@@ -45,20 +40,27 @@ public class Proxy {
 		try {
 			String method = exchange.getRequestMethod();
 			String url = this.makeUrl(exchange, server);
+			String reqParam = this.readRequestBody(exchange);
+			Map<String,List<String>> reqProps = exchange.getRequestHeaders();
 			
-			return "";
+			String egressResponse = EgressHandler.handle(url, method, reqProps, reqParam);
+			
+			return egressResponse;
 		}catch(Exception e) {
 			System.out.print(e.getMessage());
 		}
 		return null;
 	}
 	
-	private void applyFilters(HttpExchange exchange) {
-		return;
+	private boolean applyFilters(HttpExchange exchange) {
+		return true;
 	}
 	
-	public void execute(HttpExchange exchange,Server server) {
-		this.applyFilters(exchange);
-		this.makeHttpRequest(exchange, server);
+	public String execute(HttpExchange exchange,Server server) {
+		if(this.applyFilters(exchange)) {
+			return this.makeHttpRequest(exchange, server);
+		}else {
+			return null;
+		}
 	}
 }

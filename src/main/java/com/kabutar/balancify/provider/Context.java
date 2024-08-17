@@ -17,6 +17,7 @@ public class Context {
     private Proxy proxy;
 
     public Context() throws Exception {
+    	
         this.fetchConfigs();
         this.configureScheduler();
         this.initProxy();

@@ -1,6 +1,8 @@
 package com.kabutar.balancify.handler;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -11,7 +13,7 @@ import com.kabutar.balancify.constants.HttpMethod;
 
 public class EgressHandler {
 	
-	protected static String handle(
+	public static String handle(
 			String reqUrl,
 			String method,
 			Map<String,List<String>> requestProps,
@@ -43,9 +45,21 @@ public class EgressHandler {
 			
 			// get response code
 			int responseCode = conn.getResponseCode();
-			String responseMessage = conn.getResponseMessage();
 			
+			if(responseCode < 300) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				StringBuilder builder = new StringBuilder();
+				String in;
+				
+				while((in = reader.readLine()) != null) {
+					builder.append(in);
+				}
+				reader.close();
+				
+				return builder.toString();
+			}
 			
+			return null;
 			
 		} catch (IOException e) {
 			e.printStackTrace();
