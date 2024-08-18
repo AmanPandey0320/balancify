@@ -27,9 +27,12 @@ public class Context {
         return baseConfig;
     }
 
-    /*
-    *
-    * */
+    /**
+     * @description attaches scheduler to the route
+     * @throws Exception
+     * 
+     *TODO: configure different algorithms for different routes (phase-3)
+     */
     private void configureScheduler() throws Exception {
         SchedulerType schedulerType = ResolverUtil.resolveScheduler(this.baseConfig.getAlgo());
         boolean isWeighted = (this.baseConfig.getType().equals("W"));
