@@ -5,5 +5,5 @@ public enum SchedulerType {
     CONSISTANT_HASH,
     LINEAR_HASH,
     FIFO,
-    LEAST_CONNECTION,
+    LEAST_CONNECTION
 }

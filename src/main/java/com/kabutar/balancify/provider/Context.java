@@ -32,7 +32,8 @@ public class Context {
     * */
     private void configureScheduler() throws Exception {
         SchedulerType schedulerType = ResolverUtil.resolveScheduler(this.baseConfig.getAlgo());
-        this.scheduler = new Scheduler(schedulerType);
+        boolean isWeighted = (this.baseConfig.getType().equals("W"));
+        this.scheduler = new Scheduler(schedulerType,isWeighted);
 
         for(Route route: this.baseConfig.getRoute()){
             this.scheduler.init(route.getPath(),route.getServers());

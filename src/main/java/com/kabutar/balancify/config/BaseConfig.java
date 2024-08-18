@@ -6,6 +6,7 @@ public class BaseConfig {
     private String name;
     private int port;
     private String algo;
+    private String type;
     private List<Route> route;
     private HealthCheck healthCheck;
 
@@ -18,8 +19,17 @@ public class BaseConfig {
     public void setName(String name) {
         this.name = name;
     }
+    
 
-    public int getPort() {
+    public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getPort() {
         return port;
     }
 
@@ -59,6 +69,7 @@ public class BaseConfig {
                 ", algo='" + algo + '\'' +
                 ", route=" + route +
                 ", healthCheck=" + healthCheck +
+                ", type=" + type +
                 '}';
     }
 

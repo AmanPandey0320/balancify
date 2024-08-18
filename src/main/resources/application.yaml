@@ -1,6 +1,7 @@
 name: "balancify"
 port: 8080
 algo: "RR"
+type: "W"
 route:
   - id: "bal-route-1"
     path: "/get_names"
@@ -21,8 +22,8 @@ route:
         health:
           path: "/health-check"
         size:
-          cpu: 3
-          memory: 3
+          cpu: 5
+          memory: 5
   - id: "bal-route-2"
     path: "/api/v1/post/get"
     servers:

@@ -19,6 +19,8 @@ import java.util.*;
 * other servers can be allocated the requests and
 * with in that time the initial server will
 * have requests already executed and ready for our use
+* This works as Weighted Round Robin if isWeighted flag
+* is set as true while creating the object;
 *
 * */
 public class RoundRobinScheduler extends BaseScheduler {
@@ -27,10 +29,12 @@ public class RoundRobinScheduler extends BaseScheduler {
     private Queue<Server> serverQueue;
     private int noOfServer;
     private HealthCheckUtil healthCheckUtil;
+    private boolean isWeighted;
 
-    public RoundRobinScheduler(ArrayList<Server> servers) {
+    public RoundRobinScheduler(ArrayList<Server> servers, boolean isWeighted) {
         super(servers);
         this.servers = servers;
+        this.isWeighted = isWeighted;
         this.noOfServer = servers.size();
         this.healthCheckUtil = new HealthCheckUtil();
         this.sortServersBySize();
@@ -65,7 +69,7 @@ public class RoundRobinScheduler extends BaseScheduler {
             	this.updateLoad(server);
             	
             	//check threshold limit
-                if(this.isThreshold(server)){
+                if(!this.isWeighted || this.isThreshold(server)){
                     this.serverQueue.remove();
                     this.serverQueue.add(server);
                 }
@@ -77,6 +81,7 @@ public class RoundRobinScheduler extends BaseScheduler {
         return null;
     }
     
+    //TODO: to be replaced with server load monitor worker service
     private void updateLoad(Server server) {
     	int cnt = this.serverReqCount.get(server.getId());
     	this.serverReqCount.put(server.getId(),cnt+1);

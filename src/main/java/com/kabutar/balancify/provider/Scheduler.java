@@ -11,17 +11,26 @@ import java.util.HashMap;
 
 public class Scheduler {
     private final SchedulerType schedulerType;
+    private final boolean isWeighted;
     private HashMap<String, BaseScheduler> schedulers;
 
     public Scheduler(SchedulerType schedulerType) {
         this.schedulerType = schedulerType;
+        this.isWeighted = false;
         this.schedulers = new HashMap<>();
     }
 
-    public void init(String path, ArrayList<Server> servers){
+    public Scheduler(SchedulerType schedulerType, boolean isWeighted) {
+    	this.schedulerType = schedulerType;
+        this.isWeighted = isWeighted;
+        this.schedulers = new HashMap<>();
+    	
+	}
+
+	public void init(String path, ArrayList<Server> servers){
         BaseScheduler scheduler = null;
         if(schedulerType == SchedulerType.ROUND_ROBIN){
-            scheduler = new RoundRobinScheduler(servers);
+            scheduler = new RoundRobinScheduler(servers,this.isWeighted);
             scheduler.initializeParameters();
         }
 
