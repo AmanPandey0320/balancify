@@ -31,7 +31,7 @@ public class IngressHandler implements HttpHandler {
         
 
         try {
-            Server server = this.scheduler.getServeFromPool(path);
+            Server server = this.scheduler.getServeFromPool(exchange);
             String res = this.proxy.execute(exchange, server);
             exchange.sendResponseHeaders(200, res.getBytes().length);
             OutputStream output = exchange.getResponseBody();

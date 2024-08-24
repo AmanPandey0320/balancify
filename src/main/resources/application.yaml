@@ -1,6 +1,6 @@
 name: "balancify"
 port: 8080
-algo: "RR"
+algo: "LH"
 type: "W"
 route:
   - id: "bal-route-1"

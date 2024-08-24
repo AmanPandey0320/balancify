@@ -5,6 +5,7 @@ import com.kabutar.balancify.util.HealthCheckUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import com.sun.net.httpserver.HttpExchange;
 
 public class BaseScheduler {
     private ArrayList<Server> servers;
@@ -19,8 +20,7 @@ public class BaseScheduler {
 
     public void initializeParameters(){}
 
-    public Server schedule() throws IOException {
-    	System.out.println("here");
+    public Server schedule(HttpExchange exchange) throws IOException {
         int idx = 0;
         int cnt;
         int threshHold;

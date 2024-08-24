@@ -7,8 +7,6 @@ public class ResolverUtil {
         switch (type){
             case "RR":
                 return SchedulerType.ROUND_ROBIN;
-            case "FF":
-                return SchedulerType.FIFO;
             case "LC":
                 return SchedulerType.LEAST_CONNECTION;
             case "LH":

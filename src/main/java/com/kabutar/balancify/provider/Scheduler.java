@@ -3,11 +3,12 @@ package com.kabutar.balancify.provider;
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
+import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.sun.net.httpserver.HttpExchange;
 
 public class Scheduler {
     private final SchedulerType schedulerType;
@@ -32,13 +33,16 @@ public class Scheduler {
         if(schedulerType == SchedulerType.ROUND_ROBIN){
             scheduler = new RoundRobinScheduler(servers,this.isWeighted);
             scheduler.initializeParameters();
+        }else if(schedulerType == SchedulerType.LINEAR_HASH) {
+        	scheduler = new LinearHashScheduler(servers);
         }
 
         this.schedulers.put(path,scheduler);
 
     }
 
-    public Server getServeFromPool(String path) throws Exception {
+    public Server getServeFromPool(HttpExchange exchange) throws Exception {
+    	String path = exchange.getRequestURI().getPath();
         BaseScheduler scheduler = null;
 
         if(!this.schedulers.containsKey(path)){
@@ -48,6 +52,6 @@ public class Scheduler {
         scheduler = this.schedulers.get(path);
         
 
-        return scheduler.schedule();
+        return scheduler.schedule(exchange);
     }
 }

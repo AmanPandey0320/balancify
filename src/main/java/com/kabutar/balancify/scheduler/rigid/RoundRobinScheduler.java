@@ -6,6 +6,7 @@ import com.kabutar.balancify.util.HealthCheckUtil;
 
 import java.io.IOException;
 import java.util.*;
+import com.sun.net.httpserver.HttpExchange;
 
 /*
 *
@@ -52,7 +53,7 @@ public class RoundRobinScheduler extends BaseScheduler {
     }
 
     @Override
-    public Server schedule() throws IOException {
+    public Server schedule(HttpExchange exchange) throws IOException {
         int idx = 0;
         Server server;
         while(idx < this.noOfServer){
