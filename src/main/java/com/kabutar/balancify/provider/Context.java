@@ -2,9 +2,9 @@ package com.kabutar.balancify.provider;
 
 import com.kabutar.balancify.config.Route;
 import com.kabutar.balancify.constants.AppLevel;
+import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.config.BaseConfig;
 import com.kabutar.balancify.handler.IngressHandler;
-import com.kabutar.balancify.scheduler.SchedulerType;
 import com.kabutar.balancify.util.ResolverUtil;
 import com.sun.net.httpserver.HttpServer;
 import org.yaml.snakeyaml.Yaml;

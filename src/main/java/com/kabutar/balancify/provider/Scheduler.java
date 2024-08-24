@@ -1,8 +1,8 @@
 package com.kabutar.balancify.provider;
 
 import com.kabutar.balancify.config.Server;
+import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
-import com.kabutar.balancify.scheduler.SchedulerType;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
 
 import java.io.IOException;

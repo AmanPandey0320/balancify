@@ -1,4 +1,4 @@
-package com.kabutar.balancify.scheduler;
+package com.kabutar.balancify.constants;
 
 public enum SchedulerType {
     ROUND_ROBIN,

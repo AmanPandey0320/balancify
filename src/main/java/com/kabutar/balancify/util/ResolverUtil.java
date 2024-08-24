@@ -1,6 +1,6 @@
 package com.kabutar.balancify.util;
 
-import com.kabutar.balancify.scheduler.SchedulerType;
+import com.kabutar.balancify.constants.SchedulerType;
 
 public class ResolverUtil {
     public static SchedulerType resolveScheduler(String type) throws Exception {
