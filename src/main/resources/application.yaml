@@ -1,6 +1,6 @@
 name: "balancify"
 port: 8080
-algo: "LH"
+algo: "RR"
 type: "W"
 route:
   - id: "bal-route-1"
@@ -25,4 +25,4 @@ route:
           cpu: 5
           memory: 5
 healthCheck:
-  intervals: 2
+  intervals: 60

@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 public class HealthCheckUtil {
 	HashMap<String,Boolean> serverHealthMap = new HashMap<>();
 	HashMap<String,Server> serverMap = new HashMap<>();
-	int timer = 0;
 	
 	public void addServer(ArrayList<Server> servers) {
 		for(Server server:servers) {
@@ -33,13 +33,15 @@ public class HealthCheckUtil {
 	public void initSchedule(int interval) {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		scheduler.scheduleAtFixedRate(()->{
-			System.out.println("timer: "+timer);
-			this.timer++;
+			for(Entry<String,Server> entry:this.serverMap.entrySet()) {
+				this.serverHealthMap.put(entry.getKey(),this.checkServerHealth(entry.getValue()));
+			}
+			System.out.println("healthy servers: "+this.serverHealthMap);
 		}, 0, interval, TimeUnit.SECONDS);
 		
 	}
 	
-    private boolean checkServerHealth(Server server) throws IOException {
+    private boolean checkServerHealth(Server server) {
         try{
             String host = UrlUtil.getHostName(server);
             String endPoint = server.getHealth().getPath();

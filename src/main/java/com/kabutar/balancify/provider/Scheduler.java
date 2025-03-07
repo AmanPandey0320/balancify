@@ -27,6 +27,7 @@ public class Scheduler {
         this.isWeighted = isWeighted;
         this.schedulers = new HashMap<>();
         this.healthCheckUtil = new HealthCheckUtil();
+        this.healthCheckInterval = healthCheckInterval;
 	}
 
 	public void assignScheduler(String path, ArrayList<Server> servers){
