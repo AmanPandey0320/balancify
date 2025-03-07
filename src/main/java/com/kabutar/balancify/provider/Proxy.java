@@ -53,6 +53,7 @@ public class Proxy {
 	}
 	
 	private boolean applyFilters(HttpExchange exchange) {
+		// TODO: add filters to load balancer, if fail return false
 		return true;
 	}
 	
