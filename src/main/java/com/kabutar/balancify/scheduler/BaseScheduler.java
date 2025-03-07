@@ -28,7 +28,7 @@ public class BaseScheduler {
         while(idx < this.noOfServer){
             server = this.servers.get(idx);
 
-            if(healthCheckUtil.checkHealth(server)){
+            if(healthCheckUtil.isServerHealthy(server.getId())){
                 return server;
             }
             idx++;

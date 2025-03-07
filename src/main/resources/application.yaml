@@ -24,26 +24,5 @@ route:
         size:
           cpu: 5
           memory: 5
-  - id: "bal-route-2"
-    path: "/api/v1/post/get"
-    servers:
-      - id: "server-1"
-        protocol: "http"
-        ip: "localhost"
-        port: 3001
-        health:
-          path: "/health-check"
-        size:
-          cpu: 4
-          memory: 4
-      - id: "server-2"
-        protocol: "http"
-        ip: "localhost"
-        port: 3002
-        health:
-          path: "/health-check"
-        size:
-          cpu: 3
-          memory: 3
 healthCheck:
-  intervals: 300
+  intervals: 2

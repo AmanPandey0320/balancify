@@ -20,7 +20,7 @@ public class Context {
     	
         this.fetchConfigs();
         this.configureScheduler();
-        this.initProxy();
+        this.initContext();
     }
 
     public BaseConfig getBaseConfig() {
@@ -36,15 +36,17 @@ public class Context {
     private void configureScheduler() throws Exception {
         SchedulerType schedulerType = ResolverUtil.resolveScheduler(this.baseConfig.getAlgo());
         boolean isWeighted = (this.baseConfig.getType().equals("W"));
-        this.scheduler = new Scheduler(schedulerType,isWeighted);
+        
+        this.scheduler = new Scheduler(schedulerType,isWeighted,this.baseConfig.getHealthCheck().getIntervals());
 
         for(Route route: this.baseConfig.getRoute()){
-            this.scheduler.init(route.getPath(),route.getServers());
+            this.scheduler.assignScheduler(route.getPath(),route.getServers());
         }
     }
     
-    private void initProxy() {
+    private void initContext() {
     	this.proxy = new Proxy();
+    	this.scheduler.init();
     }
 
 

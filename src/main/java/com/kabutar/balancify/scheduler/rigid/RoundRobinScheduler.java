@@ -32,12 +32,12 @@ public class RoundRobinScheduler extends BaseScheduler {
     private HealthCheckUtil healthCheckUtil;
     private boolean isWeighted;
 
-    public RoundRobinScheduler(ArrayList<Server> servers, boolean isWeighted) {
+    public RoundRobinScheduler(ArrayList<Server> servers, boolean isWeighted, HealthCheckUtil healthCheckUtil) {
         super(servers);
         this.servers = servers;
         this.isWeighted = isWeighted;
         this.noOfServer = servers.size();
-        this.healthCheckUtil = new HealthCheckUtil();
+        this.healthCheckUtil = healthCheckUtil;
         this.sortServersBySize();
     }
 
@@ -59,7 +59,7 @@ public class RoundRobinScheduler extends BaseScheduler {
         while(idx < this.noOfServer){
             server = this.serverQueue.peek();
             assert server != null;
-            if(!healthCheckUtil.checkHealth(server)){
+            if(!healthCheckUtil.isServerHealthy(server.getId())){
                //server is unhealthy
                 this.serverQueue.remove();
                 this.serverQueue.add(server);

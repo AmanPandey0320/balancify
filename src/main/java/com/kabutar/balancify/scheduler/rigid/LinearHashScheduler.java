@@ -24,11 +24,11 @@ public class LinearHashScheduler extends BaseScheduler {
     private int noOfReq;
     
 
-	public LinearHashScheduler(ArrayList<Server> servers) {
+	public LinearHashScheduler(ArrayList<Server> servers, HealthCheckUtil healthCheckUtil) {
 		super(servers);
 		this.noOfReq = 0;
 		this.servers = servers;
-		this.healthCheckUtil = new HealthCheckUtil();
+		this.healthCheckUtil = healthCheckUtil;
 	}
 	
 	private void prepareServerHash() {

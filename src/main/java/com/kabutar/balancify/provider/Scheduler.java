@@ -5,6 +5,7 @@ import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
 import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
+import com.kabutar.balancify.util.HealthCheckUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,32 +15,40 @@ public class Scheduler {
     private final SchedulerType schedulerType;
     private final boolean isWeighted;
     private HashMap<String, BaseScheduler> schedulers;
+    private HealthCheckUtil healthCheckUtil;
+    private int healthCheckInterval = 30;
 
-    public Scheduler(SchedulerType schedulerType) {
-        this.schedulerType = schedulerType;
-        this.isWeighted = false;
-        this.schedulers = new HashMap<>();
-    }
-
-    public Scheduler(SchedulerType schedulerType, boolean isWeighted) {
+    public Scheduler(
+    		SchedulerType schedulerType, 
+    		boolean isWeighted, 
+    		int healthCheckInterval
+    		) {
     	this.schedulerType = schedulerType;
         this.isWeighted = isWeighted;
         this.schedulers = new HashMap<>();
-    	
+        this.healthCheckUtil = new HealthCheckUtil();
 	}
 
-	public void init(String path, ArrayList<Server> servers){
+	public void assignScheduler(String path, ArrayList<Server> servers){
         BaseScheduler scheduler = null;
         if(schedulerType == SchedulerType.ROUND_ROBIN){
-            scheduler = new RoundRobinScheduler(servers,this.isWeighted);
+            scheduler = new RoundRobinScheduler(servers,this.isWeighted,this.healthCheckUtil);
             scheduler.initializeParameters();
         }else if(schedulerType == SchedulerType.LINEAR_HASH) {
-        	scheduler = new LinearHashScheduler(servers);
+        	scheduler = new LinearHashScheduler(servers,this.healthCheckUtil);
         }
-
-        this.schedulers.put(path,scheduler);
+        
+        if(scheduler != null) {
+        	this.healthCheckUtil.addServer(servers);
+        	this.schedulers.put(path,scheduler);
+        }
+        
 
     }
+	
+	public void init() {
+		this.healthCheckUtil.initSchedule(healthCheckInterval);
+	}
 
     public Server getServeFromPool(HttpExchange exchange) throws Exception {
     	String path = exchange.getRequestURI().getPath();
