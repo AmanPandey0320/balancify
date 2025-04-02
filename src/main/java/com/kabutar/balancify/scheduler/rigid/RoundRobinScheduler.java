@@ -2,7 +2,7 @@ package com.kabutar.balancify.scheduler.rigid;
 
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.scheduler.BaseScheduler;
-import com.kabutar.balancify.util.HealthCheckUtil;
+import com.kabutar.balancify.workers.HealthCheck;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,15 +29,15 @@ public class RoundRobinScheduler extends BaseScheduler {
     private HashMap<String,Integer> serverReqCount;
     private Queue<Server> serverQueue;
     private int noOfServer;
-    private HealthCheckUtil healthCheckUtil;
+    private HealthCheck healthCheck;
     private boolean isWeighted;
 
-    public RoundRobinScheduler(ArrayList<Server> servers, boolean isWeighted, HealthCheckUtil healthCheckUtil) {
+    public RoundRobinScheduler(ArrayList<Server> servers, boolean isWeighted, HealthCheck healthCheck) {
         super(servers);
         this.servers = servers;
         this.isWeighted = isWeighted;
         this.noOfServer = servers.size();
-        this.healthCheckUtil = healthCheckUtil;
+        this.healthCheck = healthCheck;
         this.sortServersBySize();
     }
 
@@ -59,7 +59,7 @@ public class RoundRobinScheduler extends BaseScheduler {
         while(idx < this.noOfServer){
             server = this.serverQueue.peek();
             assert server != null;
-            if(!healthCheckUtil.isServerHealthy(server.getId())){
+            if(!healthCheck.isServerHealthy(server.getId())){
                //server is unhealthy
                 this.serverQueue.remove();
                 this.serverQueue.add(server);

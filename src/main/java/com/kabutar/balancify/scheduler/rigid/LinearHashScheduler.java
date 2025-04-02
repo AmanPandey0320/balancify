@@ -8,7 +8,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.scheduler.BaseScheduler;
-import com.kabutar.balancify.util.HealthCheckUtil;
+import com.kabutar.balancify.workers.HealthCheck;
 
 
 /**
@@ -18,17 +18,17 @@ import com.kabutar.balancify.util.HealthCheckUtil;
  */
 public class LinearHashScheduler extends BaseScheduler {
 	private ArrayList<Server> servers;
-    private HealthCheckUtil healthCheckUtil;
+    private HealthCheck healthCheck;
     private Map<Integer,Server> serverMap;
     private Map<String,Server> reqToServerMap;
     private int noOfReq;
     
 
-	public LinearHashScheduler(ArrayList<Server> servers, HealthCheckUtil healthCheckUtil) {
+	public LinearHashScheduler(ArrayList<Server> servers, HealthCheck healthCheck) {
 		super(servers);
 		this.noOfReq = 0;
 		this.servers = servers;
-		this.healthCheckUtil = healthCheckUtil;
+		this.healthCheck = healthCheck;
 	}
 	
 	private void prepareServerHash() {

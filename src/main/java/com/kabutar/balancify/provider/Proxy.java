@@ -11,8 +11,12 @@ import com.kabutar.balancify.util.UrlUtil;
 import com.sun.net.httpserver.HttpExchange;
 
 public class Proxy {
-	
-    private String readRequestBody(HttpExchange exchange) throws IOException {
+
+	public Proxy() {
+		System.out.println("Proxy object created");
+	}
+
+	private String readRequestBody(HttpExchange exchange) throws IOException {
     	StringBuilder builder = new StringBuilder();
     	InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(),"utf-8");
     	

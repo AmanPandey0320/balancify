@@ -1,7 +1,7 @@
 package com.kabutar.balancify.scheduler;
 
 import com.kabutar.balancify.config.Server;
-import com.kabutar.balancify.util.HealthCheckUtil;
+import com.kabutar.balancify.workers.HealthCheck;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import com.sun.net.httpserver.HttpExchange;
 public class BaseScheduler {
     private ArrayList<Server> servers;
     private int noOfServer;
-    private HealthCheckUtil healthCheckUtil;
+    private HealthCheck healthCheck;
 
     public BaseScheduler(ArrayList<Server> servers) {
         this.servers = servers;
-        this.healthCheckUtil = new HealthCheckUtil();
+        this.healthCheck = new HealthCheck();
         this.noOfServer = servers.size();
     }
 
@@ -28,7 +28,7 @@ public class BaseScheduler {
         while(idx < this.noOfServer){
             server = this.servers.get(idx);
 
-            if(healthCheckUtil.isServerHealthy(server.getId())){
+            if(healthCheck.isServerHealthy(server.getId())){
                 return server;
             }
             idx++;
