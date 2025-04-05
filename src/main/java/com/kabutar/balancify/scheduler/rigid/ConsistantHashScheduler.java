@@ -13,17 +13,19 @@ import com.sun.net.httpserver.HttpExchange;
 
 public class ConsistantHashScheduler extends BaseScheduler {
 	//TODO
-	private ArrayList<Server> servers;
+	private ArrayList<Integer> servers;
 	private HealthCheck healthCheck;
-	private TreeSet<String> serverSet;
+	private TreeSet<Integer> serverSet;
 	private Map<Integer,Server> serverMap;
 	private int maxPoolSize;
 	
 	
 	public ConsistantHashScheduler(ArrayList<Server> servers, HealthCheck healthCheck, int maxPoolSize) {
 		super(servers);
+		System.out.println("Initializion a consistent hash scheduler with pool size: "+maxPoolSize);
 		this.maxPoolSize = maxPoolSize;
 		this.healthCheck = healthCheck;
+		this.prepareServers(servers);
 	}
 	
 	/**
@@ -46,13 +48,31 @@ public class ConsistantHashScheduler extends BaseScheduler {
 			throw new Exception("Max server pool size overflow");
 		}
 		
+		int key = this.getHash(server);
+		int index = this.serverSet.headSet(key,true).size();
+		
+		if(index > 0 && this.servers.get(index) == key) {
+			throw new Exception("Collosion occured for server "+ server.toString());
+		}
+		
+		servers.add(index,key);
+		serverMap.put(index, server);
+		
+		return;
 	}
 	
 	/**
 	 * 
 	 */
-	private void prepareServers() {
-		
+	private void prepareServers(ArrayList<Server> servers) {
+		for(Server server: servers) {
+			try {
+				this.addServer(server);
+			} catch (Exception e) {
+				// TODO handle exception
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	
@@ -68,7 +88,6 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	@Override
 	public void initializeParameters() {
 		this.serverMap = new HashMap<>();
-		this.prepareServers();
 	}
 	
 }
