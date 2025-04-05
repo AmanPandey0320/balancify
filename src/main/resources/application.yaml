@@ -2,6 +2,7 @@ name: "balancify"
 port: 8080
 algo: "RR"
 type: "W"
+maxPoolSize: 256
 route:
   - id: "bal-route-1"
     path: "/get_names"

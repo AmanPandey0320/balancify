@@ -9,6 +9,7 @@ public class BaseConfig {
     private String type;
     private List<Route> route;
     private HealthCheck healthCheck;
+    private int maxPoolSize;
 
     // Getters and Setters
 
@@ -60,8 +61,18 @@ public class BaseConfig {
     public void setHealthCheck(HealthCheck healthCheck) {
         this.healthCheck = healthCheck;
     }
+    
+    
 
-    @Override
+    public int getMaxPoolSize() {
+		return maxPoolSize;
+	}
+
+	public void setMaxPoolSize(int maxPoolSize) {
+		this.maxPoolSize = maxPoolSize;
+	}
+
+	@Override
     public String toString() {
         return "AppConfig{" +
                 "name='" + name + '\'' +
