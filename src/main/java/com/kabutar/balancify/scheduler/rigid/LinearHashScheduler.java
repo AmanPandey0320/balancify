@@ -21,19 +21,19 @@ public class LinearHashScheduler extends BaseScheduler {
     private HealthCheck healthCheck;
     private Map<Integer,Server> serverMap;
     private Map<String,Server> reqToServerMap;
-    private int noOfReq;
     
 
 	public LinearHashScheduler(ArrayList<Server> servers, HealthCheck healthCheck) {
 		super(servers);
-		this.noOfReq = 0;
 		this.servers = servers;
 		this.healthCheck = healthCheck;
 	}
 	
 	private void prepareServerHash() {
 		for(int i=0;i<this.servers.size();i++) {
-			this.serverMap.put(i, servers.get(i));
+			if(healthCheck.isServerHealthy(this.servers.get(i).getId())){
+				this.serverMap.put(i, servers.get(i));
+			}
 		}
 	}
 
@@ -41,7 +41,7 @@ public class LinearHashScheduler extends BaseScheduler {
 	public Server schedule(HttpExchange exchange) throws IOException {
 		String host = exchange.getRemoteAddress().getHostName();
 		int hash = host.hashCode();
-		int key = (hash%(this.servers.size()));
+		int key = (hash%(this.serverMap.size()));
 		return this.serverMap.get(key);
 		
 	}
