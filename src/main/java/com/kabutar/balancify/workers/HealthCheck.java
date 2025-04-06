@@ -56,7 +56,7 @@ public class HealthCheck {
 
             return connection.getResponseCode() < 400;
         }catch (IOException e){
-        	e.printStackTrace();
+        	System.out.println(e.getLocalizedMessage());
             return false;
         }
     }

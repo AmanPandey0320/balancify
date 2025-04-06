@@ -41,6 +41,32 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	}
 	
 	/**
+	 * 
+	 * @param server
+	 * @throws Exception
+	 */
+	private void removeServer(Server server) throws Exception {
+		
+		if(this.keys.size() == 0) {
+			throw new Exception("No nodes in the server pool");
+		}
+		
+		int key = this.getHash(server.getIp());
+		
+		int index = Collections.binarySearch(this.keys, key);
+		
+		if(index < 0) {
+			throw new Exception("Unknown server, not present in nodes");
+		}
+		
+		this.keys.remove(index);
+		this.nodes.remove(index);
+		
+		return;
+		
+	}
+	
+	/**
 	 * @throws Exception 
 	 * 
 	 */
