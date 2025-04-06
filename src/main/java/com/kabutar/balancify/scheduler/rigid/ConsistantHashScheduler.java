@@ -2,6 +2,7 @@ package com.kabutar.balancify.scheduler.rigid;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
@@ -13,10 +14,10 @@ import com.sun.net.httpserver.HttpExchange;
 
 public class ConsistantHashScheduler extends BaseScheduler {
 	//TODO
-	private ArrayList<Integer> servers;
+	private ArrayList<Server> nodes;
+	private ArrayList<Integer> keys;
 	private HealthCheck healthCheck;
-	private TreeSet<Integer> serverSet;
-	private Map<Integer,Server> serverMap;
+	private ArrayList<Server> servers;
 	private int maxPoolSize;
 	
 	
@@ -25,7 +26,7 @@ public class ConsistantHashScheduler extends BaseScheduler {
 		System.out.println("Initializion a consistent hash scheduler with pool size: "+maxPoolSize);
 		this.maxPoolSize = maxPoolSize;
 		this.healthCheck = healthCheck;
-		this.prepareServers(servers);
+		this.servers = servers;
 	}
 	
 	/**
@@ -33,8 +34,8 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	 * @param server
 	 * @return
 	 */
-	private int getHash(Server server) {
-		int hash = server.getIp().hashCode();
+	private int getHash(String ip) {
+		int hash = ip.hashCode();
 		
 		return (hash%this.maxPoolSize);
 	}
@@ -44,19 +45,23 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	 * 
 	 */
 	private void addServer(Server server) throws Exception {
-		if(serverSet.size() == this.maxPoolSize) {
+		if(keys.size() == this.maxPoolSize) {
 			throw new Exception("Max server pool size overflow");
 		}
 		
-		int key = this.getHash(server);
-		int index = this.serverSet.headSet(key,true).size();
+		int key = this.getHash(server.getIp());
+		int index = Collections.binarySearch(this.keys, key);
 		
-		if(index > 0 && this.servers.get(index) == key) {
+		
+		
+		if(index > 0 && this.keys.get(index) == key) {
 			throw new Exception("Collosion occured for server "+ server.toString());
 		}
 		
-		servers.add(index,key);
-		serverMap.put(index, server);
+		int insertionPoint = -(index+1);
+		
+		this.keys.add(insertionPoint,key);
+		this.nodes.add(insertionPoint,server);
 		
 		return;
 	}
@@ -64,8 +69,8 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	/**
 	 * 
 	 */
-	private void prepareServers(ArrayList<Server> servers) {
-		for(Server server: servers) {
+	private void prepareServers() {
+		for(Server server: this.servers) {
 			try {
 				this.addServer(server);
 			} catch (Exception e) {
@@ -78,16 +83,25 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	
 	@Override
 	public Server schedule(HttpExchange exchange) throws IOException {
-		String host = exchange.getRemoteAddress().getHostName();
-		int hash = host.hashCode();
-		int key = (hash%(this.serverMap.size()));
-		return this.serverMap.get(key);
+		int key = this.getHash(exchange.getRemoteAddress().getHostName());
+		int index = Collections.binarySearch(keys, key);
+		
+		int nodePoint;
+		
+		if(index >= 0) {
+			nodePoint = index;
+		}else {
+			nodePoint = ((-(index+1))%this.keys.size());
+		}
+		return this.servers.get(nodePoint);
 		
 	}
 
 	@Override
 	public void initializeParameters() {
-		this.serverMap = new HashMap<>();
+		this.keys = new ArrayList<>();
+		this.nodes = new ArrayList<>();
+		this.prepareServers();
 	}
 	
 }
