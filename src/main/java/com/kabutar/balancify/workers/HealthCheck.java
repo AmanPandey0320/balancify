@@ -1,6 +1,7 @@
 package com.kabutar.balancify.workers;
 
 import com.kabutar.balancify.config.Server;
+import com.kabutar.balancify.event.HealthCheckEvent;
 import com.kabutar.balancify.util.UrlUtil;
 
 import java.io.IOException;
@@ -14,9 +15,21 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class HealthCheck {
-	HashMap<String,Boolean> serverHealthMap = new HashMap<>();
-	HashMap<String,Server> serverMap = new HashMap<>();
+	HashMap<String,Boolean> serverHealthMap;
+	HashMap<String,Server> serverMap;
+	HashMap<String,HealthCheckEvent> serverEvent;
+			
 	
+	
+	
+	public HealthCheck() {
+		super();
+		this.serverEvent = new HashMap<>();
+		this.serverHealthMap = new HashMap<>();
+		this.serverMap = new HashMap<>();
+		
+	}
+
 	public void addServer(ArrayList<Server> servers) {
 		for(Server server:servers) {
 			serverHealthMap.put(server.getId(), false);
@@ -31,11 +44,25 @@ public class HealthCheck {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param servers
+	 * @param trigger
+	 */
+	public void registerEventListner(HealthCheckEvent trigger) {
+		for(Server server:trigger.getServerList()) {
+			this.serverEvent.put(server.getId(), trigger);
+		}
+	}
+	
 	public void initSchedule(int interval) {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		
 		scheduler.scheduleAtFixedRate(()->{
+			boolean currentServerHealth;
 			for(Entry<String,Server> entry:this.serverMap.entrySet()) {
-				this.serverHealthMap.put(entry.getKey(),this.checkServerHealth(entry.getValue()));
+				currentServerHealth = this.checkServerHealth(entry.getValue());
+				this.serverHealthMap.put(entry.getKey(),currentServerHealth);
 			}
 			System.out.println("healthy servers: "+this.serverHealthMap);
 		}, 0, interval, TimeUnit.SECONDS);

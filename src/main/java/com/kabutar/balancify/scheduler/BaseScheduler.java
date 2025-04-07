@@ -36,12 +36,4 @@ public class BaseScheduler {
 
         return null;
     }
-    
-    public void onServerUpEventHandler(Server server) {
-    	
-    }
-    
-    public void onServerDownEventHandler(Server server) {
-    	
-    }
 }

@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import com.kabutar.balancify.config.Server;
+import com.kabutar.balancify.event.HealthCheckEvent;
 import com.kabutar.balancify.scheduler.BaseScheduler;
 import com.kabutar.balancify.workers.HealthCheck;
 import com.sun.net.httpserver.HttpExchange;
 
-public class ConsistantHashScheduler extends BaseScheduler {
+public class ConsistantHashScheduler extends BaseScheduler implements HealthCheckEvent{
 	//TODO
 	private ArrayList<Server> nodes;
 	private ArrayList<Integer> keys;
@@ -127,7 +128,37 @@ public class ConsistantHashScheduler extends BaseScheduler {
 	public void initializeParameters() {
 		this.keys = new ArrayList<>();
 		this.nodes = new ArrayList<>();
+		this.healthCheck.registerEventListner(this);
 		this.prepareServers();
+	}
+
+	@Override
+	public void onServerUpEventHandler(Server server) {
+		// TODO Auto-generated method stub
+		try {
+			this.addServer(server);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void onServerDownEventHandler(Server server) {
+		// TODO Auto-generated method stub
+		try {
+			this.removeServer(server);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public ArrayList<Server> getServerList() {
+		// TODO Auto-generated method stub
+		return this.servers;
 	}
 	
 }
