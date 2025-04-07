@@ -62,6 +62,15 @@ public class HealthCheck {
 			boolean currentServerHealth;
 			for(Entry<String,Server> entry:this.serverMap.entrySet()) {
 				currentServerHealth = this.checkServerHealth(entry.getValue());
+				if(currentServerHealth && !this.serverHealthMap.get(entry.getKey())) {
+					//server up now but was down earlier
+					this.serverEvent.get(entry.getKey()).onServerUpEventHandler(entry.getValue());
+				}
+				
+				if(!currentServerHealth && this.serverHealthMap.get(entry.getKey())) {
+					this.serverEvent.get(entry.getKey()).onServerDownEventHandler(entry.getValue());
+				}
+				
 				this.serverHealthMap.put(entry.getKey(),currentServerHealth);
 			}
 			System.out.println("healthy servers: "+this.serverHealthMap);
