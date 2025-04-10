@@ -1,6 +1,7 @@
 package com.kabutar.balancify.scheduler.rigid;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import com.kabutar.balancify.event.HealthCheckEvent;
 import com.kabutar.balancify.scheduler.BaseScheduler;
 import com.kabutar.balancify.workers.HealthCheck;
 import com.sun.net.httpserver.HttpExchange;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class ConsistantHashScheduler extends BaseScheduler implements HealthCheckEvent{
 	//TODO
@@ -34,11 +38,18 @@ public class ConsistantHashScheduler extends BaseScheduler implements HealthChec
 	 * 
 	 * @param server
 	 * @return
+	 * @throws NoSuchAlgorithmException 
 	 */
-	private int getHash(String ip) {
-		int hash = ip.hashCode();
-		
-		return (hash%this.maxPoolSize);
+	private int getHash(String ip) throws NoSuchAlgorithmException {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(ip.getBytes(StandardCharsets.UTF_8));
+        
+        int hash = 0;
+        for (int i = 0; i < 4; i++) {
+            hash <<= 8;
+            hash |= (hashBytes[i] & 0xFF);
+        }
+        return (hash & Integer.MAX_VALUE) % this.maxPoolSize;
 	}
 	
 	/**
@@ -52,7 +63,7 @@ public class ConsistantHashScheduler extends BaseScheduler implements HealthChec
 			throw new Exception("No nodes in the server pool");
 		}
 		
-		int key = this.getHash(server.getIp());
+		int key = this.getHash(server.getUrl());
 		
 		int index = Collections.binarySearch(this.keys, key);
 		
@@ -76,7 +87,7 @@ public class ConsistantHashScheduler extends BaseScheduler implements HealthChec
 			throw new Exception("Max server pool size overflow");
 		}
 		
-		int key = this.getHash(server.getIp());
+		int key = this.getHash(server.getUrl());
 		int index = Collections.binarySearch(this.keys, key);
 		
 		
@@ -93,23 +104,9 @@ public class ConsistantHashScheduler extends BaseScheduler implements HealthChec
 		return;
 	}
 	
-	/**
-	 * 
-	 */
-	private void prepareServers() {
-		for(Server server: this.servers) {
-			try {
-				this.addServer(server);
-			} catch (Exception e) {
-				// TODO handle exception
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	
 	@Override
-	public Server schedule(HttpExchange exchange) throws IOException {
+	public Server schedule(HttpExchange exchange) throws NoSuchAlgorithmException {
 		int key = this.getHash(exchange.getRemoteAddress().getHostName());
 		int index = Collections.binarySearch(keys, key);
 		
@@ -129,7 +126,6 @@ public class ConsistantHashScheduler extends BaseScheduler implements HealthChec
 		this.keys = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 		this.healthCheck.registerEventListner(this);
-		this.prepareServers();
 	}
 
 	@Override

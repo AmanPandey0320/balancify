@@ -1,6 +1,6 @@
 name: "balancify"
 port: 8080
-algo: "RR"
+algo: "CH"
 type: "W"
 maxPoolSize: 256
 route:
@@ -8,18 +8,14 @@ route:
     path: "/get_names"
     servers:
       - id: "server-1"
-        protocol: "http"
-        ip: "localhost"
-        port: 3000
+        url: "http://localhost:3000"
         health:
           path: "/health-check"
         size:
           cpu: 2
           memory: 2
       - id: "server-2"
-        protocol: "http"
-        ip: "localhost"
-        port: 3002
+        url: "http://localhost:3002"
         health:
           path: "/health-check"
         size:

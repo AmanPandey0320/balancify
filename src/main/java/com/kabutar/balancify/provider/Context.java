@@ -37,7 +37,12 @@ public class Context {
         SchedulerType schedulerType = ResolverUtil.resolveScheduler(this.baseConfig.getAlgo());
         boolean isWeighted = (this.baseConfig.getType().equals("W"));
         
-        this.scheduler = new Scheduler(schedulerType,isWeighted,this.baseConfig.getHealthCheck().getIntervals());
+        this.scheduler = new Scheduler(
+        		schedulerType,
+        		isWeighted,
+        		this.baseConfig.getHealthCheck().getIntervals(),
+        		this.baseConfig.getMaxPoolSize()
+        		);
 
         for(Route route: this.baseConfig.getRoute()){
             this.scheduler.assignScheduler(route.getPath(),route.getServers());

@@ -2,7 +2,6 @@ package com.kabutar.balancify.workers;
 
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.event.HealthCheckEvent;
-import com.kabutar.balancify.util.UrlUtil;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -80,7 +79,7 @@ public class HealthCheck {
 	
     private boolean checkServerHealth(Server server) {
         try{
-            String host = UrlUtil.getHostName(server);
+            String host = server.getUrl();
             String endPoint = server.getHealth().getPath();
 
             URL url = new URL(host+endPoint);

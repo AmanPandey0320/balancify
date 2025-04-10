@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.handler.EgressHandler;
-import com.kabutar.balancify.util.UrlUtil;
 import com.sun.net.httpserver.HttpExchange;
 
 public class Proxy {
@@ -32,7 +31,7 @@ public class Proxy {
     private String makeUrl(HttpExchange exchange, Server server) {
     	StringBuilder builder = new StringBuilder();
     	String path =  exchange.getRequestURI().getPath();
-    	String host = UrlUtil.getHostName(server);
+    	String host = server.getUrl();
     	
     	builder.append(host);
     	builder.append(path);

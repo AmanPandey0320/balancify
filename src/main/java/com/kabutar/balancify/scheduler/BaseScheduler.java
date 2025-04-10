@@ -4,6 +4,7 @@ import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.workers.HealthCheck;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -20,7 +21,7 @@ public class BaseScheduler {
 
     public void initializeParameters(){}
 
-    public Server schedule(HttpExchange exchange) throws IOException {
+    public Server schedule(HttpExchange exchange) throws IOException, NoSuchAlgorithmException {
         int idx = 0;
         int cnt;
         int threshHold;

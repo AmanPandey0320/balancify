@@ -3,6 +3,7 @@ package com.kabutar.balancify.provider;
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
+import com.kabutar.balancify.scheduler.rigid.ConsistantHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
 import com.kabutar.balancify.workers.HealthCheck;
@@ -17,29 +18,34 @@ public class Scheduler {
     private HashMap<String, BaseScheduler> schedulers;
     private HealthCheck healthCheck;
     private int healthCheckInterval = 30;
+    private int maxServerPoolSize = 32;
 
     public Scheduler(
     		SchedulerType schedulerType, 
     		boolean isWeighted, 
-    		int healthCheckInterval
+    		int healthCheckInterval,
+    		int maxServerPoolSize
     		) {
     	this.schedulerType = schedulerType;
         this.isWeighted = isWeighted;
         this.schedulers = new HashMap<>();
         this.healthCheck = new HealthCheck();
         this.healthCheckInterval = healthCheckInterval;
+        this.maxServerPoolSize = maxServerPoolSize;
 	}
 
 	public void assignScheduler(String path, ArrayList<Server> servers){
         BaseScheduler scheduler = null;
         if(schedulerType == SchedulerType.ROUND_ROBIN){
             scheduler = new RoundRobinScheduler(servers,this.isWeighted,this.healthCheck);
-            scheduler.initializeParameters();
         }else if(schedulerType == SchedulerType.LINEAR_HASH) {
         	scheduler = new LinearHashScheduler(servers,this.healthCheck);
+        }else if(schedulerType == SchedulerType.CONSISTANT_HASH) {
+        	scheduler = new ConsistantHashScheduler(servers,this.healthCheck,this.maxServerPoolSize);
         }
         
         if(scheduler != null) {
+        	scheduler.initializeParameters();
         	this.healthCheck.addServer(servers);
         	this.schedulers.put(path,scheduler);
         }
