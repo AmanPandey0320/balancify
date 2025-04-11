@@ -18,20 +18,19 @@ public class LoadMonitor {
 	 * @constructor
 	 * @param requestCount
 	 */
-	public LoadMonitor(ArrayList<Server> servers) {
+	public LoadMonitor() {
 		super();
 		this.reqCount = new ArrayList<>(Collections.nCopies(servers.size(), 0));
 		this.serverToIndex = new HashMap<>();
-		this.servers = servers;
-		this.mapServers();
 	}
 	
 	/**
 	 * 
 	 */
-	private void mapServers() {
-		int index = 0;
-		for(Server server:this.servers) {
+	public void addServers(ArrayList<Server> servers) {
+		int index = this.servers.size();
+		for(Server server:servers) {
+			this.servers.add(server);
 			this.serverToIndex.put(server.getId(), index);
 			index++;
 		}

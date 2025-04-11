@@ -6,6 +6,7 @@ import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.config.BaseConfig;
 import com.kabutar.balancify.handler.IngressHandler;
 import com.kabutar.balancify.util.ResolverUtil;
+import com.kabutar.balancify.workers.LoadMonitor;
 import com.sun.net.httpserver.HttpServer;
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,8 +16,12 @@ public class Context {
     private BaseConfig baseConfig;
     private Scheduler scheduler;
     private Proxy proxy;
+    private LoadMonitor loadMonitor;
 
     public Context() throws Exception {
+    	
+    	this.proxy = new Proxy();
+    	this.loadMonitor = new LoadMonitor();
     	
         this.fetchConfigs();
         this.configureScheduler();
@@ -41,7 +46,8 @@ public class Context {
         		schedulerType,
         		isWeighted,
         		this.baseConfig.getHealthCheck().getIntervals(),
-        		this.baseConfig.getMaxPoolSize()
+        		this.baseConfig.getMaxPoolSize(),
+        		this.loadMonitor
         		);
 
         for(Route route: this.baseConfig.getRoute()){
@@ -50,7 +56,6 @@ public class Context {
     }
     
     private void initContext() {
-    	this.proxy = new Proxy();
     	this.scheduler.init();
     }
 

@@ -7,6 +7,7 @@ import com.kabutar.balancify.scheduler.rigid.ConsistantHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
 import com.kabutar.balancify.workers.HealthCheck;
+import com.kabutar.balancify.workers.LoadMonitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,12 +20,14 @@ public class Scheduler {
     private HealthCheck healthCheck;
     private int healthCheckInterval = 30;
     private int maxServerPoolSize = 32;
+    private LoadMonitor loadMonitor;
 
     public Scheduler(
     		SchedulerType schedulerType, 
     		boolean isWeighted, 
     		int healthCheckInterval,
-    		int maxServerPoolSize
+    		int maxServerPoolSize,
+    		LoadMonitor loadMonitor
     		) {
     	this.schedulerType = schedulerType;
         this.isWeighted = isWeighted;
@@ -32,6 +35,7 @@ public class Scheduler {
         this.healthCheck = new HealthCheck();
         this.healthCheckInterval = healthCheckInterval;
         this.maxServerPoolSize = maxServerPoolSize;
+        this.loadMonitor = loadMonitor;
 	}
 
 	public void assignScheduler(String path, ArrayList<Server> servers){
@@ -48,6 +52,7 @@ public class Scheduler {
         	scheduler.initializeParameters();
         	this.healthCheck.addServer(servers);
         	this.schedulers.put(path,scheduler);
+        	this.loadMonitor.addServers(servers);
         }
         
 
