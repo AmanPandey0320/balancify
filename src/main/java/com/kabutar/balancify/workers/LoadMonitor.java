@@ -20,7 +20,8 @@ public class LoadMonitor {
 	 */
 	public LoadMonitor() {
 		super();
-		this.reqCount = new ArrayList<>(Collections.nCopies(servers.size(), 0));
+		this.servers = new ArrayList<>();
+		this.reqCount = new ArrayList<>();
 		this.serverToIndex = new HashMap<>();
 	}
 	
@@ -32,6 +33,7 @@ public class LoadMonitor {
 		for(Server server:servers) {
 			this.servers.add(server);
 			this.serverToIndex.put(server.getId(), index);
+			this.reqCount.add(0);
 			index++;
 		}
 	}
