@@ -7,12 +7,16 @@ import java.util.Map;
 
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.handler.EgressHandler;
+import com.kabutar.balancify.workers.LoadMonitor;
 import com.sun.net.httpserver.HttpExchange;
 
 public class Proxy {
+	
+	private LoadMonitor loadMonitor;
+	
 
-	public Proxy() {
-		System.out.println("Proxy object created");
+	public void setLoadMonitor(LoadMonitor loadMonitor) {
+		this.loadMonitor = loadMonitor;
 	}
 
 	private String readRequestBody(HttpExchange exchange) throws IOException {
@@ -39,6 +43,15 @@ public class Proxy {
     	return builder.toString();
     	
     }
+    
+    /**
+     * @descriptoin 
+     * sends egress req to scheduled server, 
+     * manages load via load monitor
+     * @param exchange
+     * @param server
+     * @return
+     */
 	private String makeHttpRequest(HttpExchange exchange, Server server) {
 		try {
 			String method = exchange.getRequestMethod();
@@ -46,10 +59,19 @@ public class Proxy {
 			String reqParam = this.readRequestBody(exchange);
 			Map<String,List<String>> reqProps = exchange.getRequestHeaders();
 			
+			//incease load on server
+			this.loadMonitor.increase(server.getId());
+			
 			String egressResponse = EgressHandler.handle(url, method, reqProps, reqParam);
+			
+			//decrease load on server;
+			this.loadMonitor.decrease(server.getId());
 			
 			return egressResponse;
 		}catch(Exception e) {
+			//decrease load on server;
+			this.loadMonitor.decrease(server.getId());
+			
 			System.out.print(e.getMessage());
 		}
 		return null;

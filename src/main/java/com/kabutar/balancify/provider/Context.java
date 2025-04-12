@@ -49,6 +49,8 @@ public class Context {
         		this.baseConfig.getMaxPoolSize(),
         		this.loadMonitor
         		);
+        
+        this.proxy.setLoadMonitor(this.loadMonitor);
 
         for(Route route: this.baseConfig.getRoute()){
             this.scheduler.assignScheduler(route.getPath(),route.getServers());
