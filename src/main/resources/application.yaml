@@ -3,6 +3,7 @@ port: 8080
 algo: "LC"
 type: "W"
 maxPoolSize: 256
+scalingFactor: 3.2
 route:
   - id: "bal-route-1"
     path: "/get_names"

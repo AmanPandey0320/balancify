@@ -10,8 +10,17 @@ public class BaseConfig {
     private List<Route> route;
     private HealthCheck healthCheck;
     private int maxPoolSize;
+    private double scalingFactor;
 
     // Getters and Setters
+
+    public double getScalingFactor() {
+        return scalingFactor;
+    }
+
+    public void setScalingFactor(double scalingFactor) {
+        this.scalingFactor = scalingFactor;
+    }
 
     public String getName() {
         return name;

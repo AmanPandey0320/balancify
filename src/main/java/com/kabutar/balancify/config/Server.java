@@ -44,24 +44,24 @@ public class Server {
     }
 
     public static class Size {
-        private int cpu;
-        private int memory;
+        private double cpu;
+        private double memory;
 
         // Getters and Setters
 
-        public int getCpu() {
+        public double getCpu() {
             return cpu;
         }
 
-        public void setCpu(int cpu) {
+        public void setCpu(double cpu) {
             this.cpu = cpu;
         }
 
-        public int getMemory() {
+        public double getMemory() {
             return memory;
         }
 
-        public void setMemory(int memory) {
+        public void setMemory(double memory) {
             this.memory = memory;
         }
 
@@ -76,7 +76,7 @@ public class Server {
 
 	@Override
 	public String toString() {
-		return "Server [id=" + id + ", health=" + health + ", size=" + size + ", url=" + url + "]";
+		return "Server [id=" + id + ", health=" + health.toString() + ", size=" + size.toString() + ", url=" + url + "]";
 	}
 
 	
