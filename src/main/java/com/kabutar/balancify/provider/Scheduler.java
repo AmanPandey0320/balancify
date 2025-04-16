@@ -3,6 +3,7 @@ package com.kabutar.balancify.provider;
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
+import com.kabutar.balancify.scheduler.dynamic.LeastConnectionScheduler;
 import com.kabutar.balancify.scheduler.rigid.ConsistantHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
@@ -46,6 +47,8 @@ public class Scheduler {
         	scheduler = new LinearHashScheduler(servers,this.healthCheck);
         }else if(schedulerType == SchedulerType.CONSISTANT_HASH) {
         	scheduler = new ConsistantHashScheduler(servers,this.healthCheck,this.maxServerPoolSize);
+        }else if(schedulerType == SchedulerType.LEAST_CONNECTION){
+            scheduler = new LeastConnectionScheduler(servers,this.loadMonitor);
         }
         
         if(scheduler != null) {

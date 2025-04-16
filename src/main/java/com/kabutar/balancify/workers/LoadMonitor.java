@@ -89,8 +89,12 @@ public class LoadMonitor {
 		return;
 	}
 	
-	public Server getServerWithLeastLoad() {
-		return this.servers.get(0);
+	public Server getServerWithLeastLoad() throws Exception {
+		if(!this.servers.isEmpty()){
+			return this.servers.getFirst();
+		}
+
+		throw new Exception("No server available");
 	}
 	
 	

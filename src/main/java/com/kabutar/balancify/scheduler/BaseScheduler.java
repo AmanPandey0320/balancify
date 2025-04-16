@@ -21,7 +21,7 @@ public class BaseScheduler {
 
     public void initializeParameters(){}
 
-    public Server schedule(HttpExchange exchange) throws IOException, NoSuchAlgorithmException {
+    public Server schedule(HttpExchange exchange) throws Exception {
         int idx = 0;
         int cnt;
         int threshHold;
