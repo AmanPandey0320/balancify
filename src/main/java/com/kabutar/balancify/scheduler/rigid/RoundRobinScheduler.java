@@ -90,7 +90,7 @@ public class RoundRobinScheduler extends BaseScheduler {
     
     private boolean isThreshold(Server server) {
     	int cnt = this.serverReqCount.get(server.getId());
-    	int threshHold = server.getSize().getCpu();
+    	double threshHold = server.getSize().getCpu();
     	
     	return (cnt >= (threshHold*9)/10);
     	

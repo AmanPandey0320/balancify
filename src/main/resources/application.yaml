@@ -1,6 +1,6 @@
 name: "balancify"
 port: 8080
-algo: "LC"
+algo: "CH"
 type: "W"
 maxPoolSize: 256
 scalingFactor: 3.2
