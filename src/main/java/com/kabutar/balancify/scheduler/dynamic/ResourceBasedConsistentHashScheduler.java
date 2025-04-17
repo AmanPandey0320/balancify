@@ -3,9 +3,12 @@ package com.kabutar.balancify.scheduler.dynamic;
 import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.scheduler.rigid.ConsistantHashScheduler;
 import com.kabutar.balancify.workers.HealthCheck;
+import com.sun.net.httpserver.HttpExchange;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class ResourceBasedConsistentHashScheduler extends ConsistantHashScheduler {
@@ -45,7 +48,7 @@ public class ResourceBasedConsistentHashScheduler extends ConsistantHashSchedule
     public void onServerUpEventHandler(Server server) {
         try{
             int noOfNodes = this.getVirtualNodeCount(server.getSize());
-
+            
 
             String newId;
             for(int i=0;i<noOfNodes;i++){
@@ -54,12 +57,33 @@ public class ResourceBasedConsistentHashScheduler extends ConsistantHashSchedule
                 this.addServer(server);
             }
         }catch (Exception e){
-
+        	logger.error(e.getMessage());
+        	logger.debug(e.getStackTrace().toString());
         }
     }
 
     @Override
     public void onServerDownEventHandler(Server server) {
-        super.onServerDownEventHandler(server);
+    	try {
+    		int noOfNodes = this.getVirtualNodeCount(server.getSize());
+        	
+        	String newId;
+        	for(int i=0;i<noOfNodes;i++){
+                newId = server.getId() + "_node_" + Integer.toString(i);
+                server.setId(newId);
+                this.removeServer(server);
+            }
+    	}catch(Exception e) {
+    		
+    	}
+    	
     }
+
+	@Override
+	public Server schedule(HttpExchange exchange) throws NoSuchAlgorithmException {
+		// TODO Auto-generated method stub
+		return super.schedule(exchange);
+	}
+    
+    
 }
