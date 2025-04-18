@@ -4,6 +4,8 @@ import com.kabutar.balancify.config.Server;
 import com.kabutar.balancify.constants.SchedulerType;
 import com.kabutar.balancify.scheduler.BaseScheduler;
 import com.kabutar.balancify.scheduler.dynamic.LeastConnectionScheduler;
+import com.kabutar.balancify.scheduler.dynamic.ResourceBasedConsistentHashScheduler;
+import com.kabutar.balancify.scheduler.dynamic.WeightedLeastConnectionScheduler;
 import com.kabutar.balancify.scheduler.rigid.ConsistantHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.LinearHashScheduler;
 import com.kabutar.balancify.scheduler.rigid.RoundRobinScheduler;
@@ -22,13 +24,15 @@ public class Scheduler {
     private int healthCheckInterval = 30;
     private int maxServerPoolSize = 32;
     private LoadMonitor loadMonitor;
+    private double scalingFactor;
 
     public Scheduler(
     		SchedulerType schedulerType, 
     		boolean isWeighted, 
     		int healthCheckInterval,
     		int maxServerPoolSize,
-    		LoadMonitor loadMonitor
+    		LoadMonitor loadMonitor,
+    		double scalingFactor
     		) {
     	this.schedulerType = schedulerType;
         this.isWeighted = isWeighted;
@@ -37,6 +41,7 @@ public class Scheduler {
         this.healthCheckInterval = healthCheckInterval;
         this.maxServerPoolSize = maxServerPoolSize;
         this.loadMonitor = loadMonitor;
+        this.scalingFactor = scalingFactor;
 	}
 
 	public void assignScheduler(String path, ArrayList<Server> servers){
@@ -46,9 +51,17 @@ public class Scheduler {
         }else if(schedulerType == SchedulerType.LINEAR_HASH) {
         	scheduler = new LinearHashScheduler(servers,this.healthCheck);
         }else if(schedulerType == SchedulerType.CONSISTANT_HASH) {
-        	scheduler = new ConsistantHashScheduler(servers,this.healthCheck,this.maxServerPoolSize);
+        	if(this.isWeighted) {
+        		scheduler = new ResourceBasedConsistentHashScheduler(servers,this.healthCheck,this.maxServerPoolSize,this.scalingFactor);
+        	}else {
+        		scheduler = new ConsistantHashScheduler(servers,this.healthCheck,this.maxServerPoolSize);
+        	}
         }else if(schedulerType == SchedulerType.LEAST_CONNECTION){
-            scheduler = new LeastConnectionScheduler(servers,this.loadMonitor);
+            if(this.isWeighted) {
+            	scheduler = new WeightedLeastConnectionScheduler(servers,this.loadMonitor,this.scalingFactor);
+            }else {
+            	scheduler = new LeastConnectionScheduler(servers,this.loadMonitor);
+            }
         }
         
         if(scheduler != null) {

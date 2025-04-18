@@ -47,7 +47,8 @@ public class Context {
         		isWeighted,
         		this.baseConfig.getHealthCheck().getIntervals(),
         		this.baseConfig.getMaxPoolSize(),
-        		this.loadMonitor
+        		this.loadMonitor,
+        		this.baseConfig.getScalingFactor()
         		);
         
         this.proxy.setLoadMonitor(this.loadMonitor);
